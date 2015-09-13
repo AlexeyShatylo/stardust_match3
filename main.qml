@@ -31,6 +31,8 @@ ApplicationWindow {
                 id: mainBoard
                 model: myBoardModel
                 anchors.fill: parent
+                interactive: false
+                spacing: 10
                 orientation: ListView.Horizontal
                 delegate:
                     Component {
@@ -46,32 +48,44 @@ ApplicationWindow {
                             anchors.right: parent.right
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
+                            interactive: false
+                            spacing: 10
+                            move: Transition {
+                                id:myTrans
+                                NumberAnimation { properties: "x,y"; duration: 1000 }
+                            }
+                            moveDisplaced: Transition {
+                                   NumberAnimation { properties: "x,y"; duration: 1000 }
+                               }
                             delegate:
                                 Component {
                                 Item {
+
                                     id: myColumndelegate
                                     focus: true
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     height:100
                                     width: 100
+
                                     Image {
                                         id: itemImage
                                         width: 100
                                         height: 100
                                         anchors.centerIn: parent.Center
                                         source: myColumn.model.getSource(itemType)
-
                                     }
                                     MouseArea {
                                         id:myItemMouseArea
                                         anchors.fill: parent
-                                        onClicked: console.log (index,positionInModelRowRole)
+                                        onClicked: {
+                                            myColumn.model.shiftingItemVertical(index)
+                                        }
+
                                     }
                                 }
                             }
                         }
-
                     }
                 }
             }

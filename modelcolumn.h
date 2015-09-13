@@ -16,13 +16,14 @@ public:
     Q_INVOKABLE int rowCount(const QModelIndex &parent) const;
     QHash<int, QByteArray> roleNames() const;
     enum itemRoles{itemTypeRole = Qt::UserRole + 1, itemOpacityRole = Qt::UserRole + 2, itemPositionInModelRowRole = Qt::UserRole + 3};
-    bool create();
     void remove();
     void fillRandomly();
     int getRandomNumber(const int Min, const int Max);
     Q_INVOKABLE QString getSource(int type);
-    QList<boardItem *> *getColumn();
+    Q_INVOKABLE void shiftingItemVertical(int index);
+    bool makeWay(int index);
 private:
+   QVector<int> m_path;
    int m_height;
    int m_itemPositionInModelRow;
    QVector<int> m_types;

@@ -6,23 +6,15 @@ ModelColumn::ModelColumn(QObject *parent): QAbstractListModel(parent)
 }
 ModelColumn::ModelColumn(int height, QVector<int> types,int itemPositionInModel):m_height(height), m_types(types), m_itemPositionInModelRow(itemPositionInModel)
 {
-
     for(int i = 0; i < m_height; i++) {
-      m_column.append(new boardItem(0,0,itemPositionInModel));
+        m_column.append(new boardItem(0,0,itemPositionInModel));
     }
     fillRandomly();
-
 }
-bool ModelColumn::create()
-{
-  return true;
-}
-
 void ModelColumn::remove()
 {
     delete[] m_columnItem;
 }
-
 void ModelColumn::fillRandomly()
 {
     QVector<int> randVect;
@@ -94,7 +86,37 @@ QString ModelColumn::getSource(int type)
     return "noImage";
 }
 
-QList<boardItem *>*ModelColumn::getColumn()
+void ModelColumn::shiftingItemVertical(int index)
 {
-    return &m_column;
+    if(makeWay(index)) {
+        if(m_path[0] - m_path[1] == - 1)
+        {
+            beginMoveRows(QModelIndex(), m_path[0], m_path[0], QModelIndex(), m_path[0] + 2);
+            qSwap(m_column[m_path[0]], m_column[m_path[1]]);
+            endMoveRows();
+        } else if (m_path[0] - m_path[1] == 1) {
+            beginMoveRows(QModelIndex(), m_path[0], m_path[0], QModelIndex(), m_path[0] - 1);
+            qSwap(m_column[m_path[0]], m_column[m_path[1]]);
+            endMoveRows();
+        }
+
+        m_path.clear();
+    }
 }
+bool ModelColumn::makeWay(int index)
+{
+    if(m_path.empty()) {
+        m_path.append(index);
+        return false;
+    } else {
+        if(index == m_path[0]) {
+
+            return false;
+        } else {
+            m_path.append(index);
+            return true;
+        }
+    }
+    return false;
+}
+

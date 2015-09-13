@@ -6,7 +6,7 @@ DataParser::DataParser(QObject *parent): QObject(parent)
 }
 void DataParser::fillFromFile()
 {
-    QFile file("inputData.json");
+    QFile file("d:/inputData.json");
     file.open(QIODevice::ReadOnly);
     QByteArray rawData = file.readAll();
     QJsonDocument doc(QJsonDocument::fromJson(rawData));
