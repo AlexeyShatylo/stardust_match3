@@ -9,14 +9,14 @@
 #include "modelcolumn.h"
 class ModelBoard : public QAbstractListModel
 {
-   Q_OBJECT
+    Q_OBJECT
 public:
     explicit ModelBoard(QObject *parent = 0);
     ModelBoard(int width, int height, QVector<int> types);
     QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE int rowCount(const QModelIndex &parent) const;
     QHash<int, QByteArray> roleNames() const;
-    enum columnRoles{columnRole = Qt::UserRole + 1};
+    enum columnRoles{columnRole = Qt::UserRole + 1 };
 private:
     QVector<ModelColumn*> m_board;
     int m_width;

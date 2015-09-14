@@ -1,21 +1,19 @@
 #include "modelcolumn.h"
-
+#include <QDebug>
 ModelColumn::ModelColumn(QObject *parent): QAbstractListModel(parent)
 {
-
+    
 }
 ModelColumn::ModelColumn(int height, QVector<int> types,int itemPositionInModel):m_height(height), m_types(types), m_itemPositionInModelRow(itemPositionInModel)
 {
-
     for(int i = 0; i < m_height; i++) {
-      m_column.append(new boardItem(0,0,itemPositionInModel));
+        m_column.append(new boardItem(0,0,itemPositionInModel));
     }
     fillRandomly();
-
 }
 bool ModelColumn::create()
 {
-  return true;
+    return true;
 }
 
 void ModelColumn::remove()
@@ -44,7 +42,7 @@ int ModelColumn::ModelColumn::getRandomNumber(const int Min, const int Max)
 QVariant ModelColumn::data(const QModelIndex &index, int role) const
 {
     const boardItem* m_columnItem = m_column[index.row()];
-
+    
     if(role == itemTypeRole) {
         return m_columnItem->getItemType();
     }
@@ -54,6 +52,9 @@ QVariant ModelColumn::data(const QModelIndex &index, int role) const
     else if(role == itemPositionInModelRowRole) {
         return m_columnItem->getRowInModel();
     }
+    else if (index.row() < 0 || index.row() >= m_column.size()){
+          return QVariant();
+      }
     return 0;
 }
 QHash<int, QByteArray> ModelColumn::roleNames() const
@@ -94,7 +95,50 @@ QString ModelColumn::getSource(int type)
     return "noImage";
 }
 
-QList<boardItem *>*ModelColumn::getColumn()
+bool ModelColumn::makeWay(int index)
 {
-    return &m_column;
+    if(m_path.isEmpty()) {
+        m_path.append(index);
+    }
+    else
+    {
+        if(m_path[0]!= index) {
+            m_path.append(index);
+            qDebug() << m_path;
+            return true;
+        }
+        else {
+            m_path.clear();
+        }
+    }
+    return false;
 }
+bool ModelColumn::moveItemVectical(int from , int to)
+{
+
+    beginMoveRows(QModelIndex(), from, from, QModelIndex(), to + 1);
+    endMoveRows();
+    qSwap(m_column[from],m_column[from]);
+}
+
+bool ModelColumn::moveItemHorizontal(int from, int to)
+{
+    beginMoveRows(QModelIndex().parent(), from, from, QModelIndex().child(0,0), to + 1);
+    endMoveRows();
+
+}
+void ModelColumn::shiftingItems (int index)
+{
+    if(makeWay(index)) {
+        if(m_path[0] - m_path[1] == 1 || m_path[0] - m_path[1] == -1) {
+            if(m_path[0] - m_path[1] == - 1) {
+                moveItemVectical(m_path[0],m_path[1]);
+            }
+            else if(m_path[0] - m_path[1]  == 1) {
+                moveItemVectical(m_path[1], m_path[0]);
+            }
+        }
+        m_path.clear();
+    }
+}
+

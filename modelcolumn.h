@@ -21,14 +21,17 @@ public:
     void fillRandomly();
     int getRandomNumber(const int Min, const int Max);
     Q_INVOKABLE QString getSource(int type);
-    QList<boardItem *> *getColumn();
+    Q_INVOKABLE bool moveItemVectical(int from, int to);
+    Q_INVOKABLE bool moveItemHorizontal(int from, int to);
+    Q_INVOKABLE bool makeWay(int index);
+    Q_INVOKABLE void shiftingItems(int index);
 private:
-   int m_height;
-   int m_itemPositionInModelRow;
-   QVector<int> m_types;
-   QList<boardItem*> m_column;
-   boardItem* m_columnItem;
-
+    int m_height;
+    int m_itemPositionInModelRow;
+    QVector<int> m_types;
+    QList<boardItem*> m_column;
+    boardItem* m_columnItem;
+    QVector<int>m_path;
 };
 
 #endif // MODELCOLUMN_H
